@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {useState} from "react";
 import { GlobalStyles } from "./GlobalStyles";
 import { Layout } from "./Layout.styled";
 import { Section } from "./Section/Section";
@@ -6,35 +6,39 @@ import { FeedbackOptions } from "./FeedbackOptions/FeedbackOptions";
 import { Statistics } from "./Statistics/Statictics";
 import { Notification } from "./Notification/Notification";
 
-export class App extends Component  {
-  static propTypes = {};
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [bad, setBad] = useState(0);
+  const [neutral, setNeutral] = useState(0);
 
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0
+  const handleIncrementFeedback = evt => {
+    switch (evt.currentTarget.name) {
+      case "good":
+        setGood(prev => prev + 1) 
+        break;
+      case "bad":
+        setBad(prev => prev + 1) 
+        break;
+      case "neutral":
+        setNeutral(prev => prev + 1) 
+        break;
+      default:
+        break;
+    }
   };
-  
-  countTotalFeedback = () => Object.values(this.state).reduce((acc, el) => (acc + el), 0);
 
-  countPositiveFeedbackPercentage = () => {
-    const total = this.countTotalFeedback();
-    const { good } = this.state;
+  
+  const countTotalFeedback = () => good + bad + neutral;
+
+  const countPositiveFeedbackPercentage = () => {
+    const total = countTotalFeedback();
     const percentage = (good / total) * 100;
     return Math.round(percentage);
   }
 
-  handleIncrementFeedback = evt => {
-    const { name } = evt.currentTarget;
-    console.log(name);
-    this.setState(prevState => ({
-      [name]: prevState[name] + 1
-    }));
-  };
 
-  render() {
-    const { good, bad, neutral } = this.state;
-    const { countTotalFeedback, countPositiveFeedbackPercentage, handleIncrementFeedback } = this;
+
+
     return (
       <Layout>
         <GlobalStyles />
@@ -49,7 +53,6 @@ export class App extends Component  {
           )}
         </Section>
       </Layout>
-  )}
-
+  )
 };
 
